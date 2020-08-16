@@ -6,13 +6,13 @@ import asyncio
 class WSServer(ServerTemplate):
     def __init__(self, host: str, port: str, loop: asyncio.AbstractEventLoop):
         self.server = websockets.serve(self.conn_handle, host=host, port=int(port), loop=loop)
-        print(f"WSServer Running on {host}:{port}")
+        print(f"-- WSServer is running on {host}:{port}")
 
     def run(self):
         return self.server
 
     async def conn_handle(self, wsocket: websockets.WebSocketClientProtocol, path: str):
-        host, port = wsocket.remote_address[0], wsocket.remote_address[1]
+        host, port = wsocket.remote_address
         print(f'{host}:{port} websocket has connected')
         while not wsocket.closed:
             try:

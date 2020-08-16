@@ -23,7 +23,7 @@ async def command_loop(command_queue, *servers):
         try:
             command = await asyncio.wait_for(loop.run_in_executor(None, 
                 functools.partial(command_queue.get, timeout=1)), None)
-            print("Command", command)
+            print(f"Command: {command.get('cmd', 'Empty command')}")
         except queue.Empty:
             continue
 
