@@ -25,7 +25,7 @@ class BotBackendColorizer(chromalog.colorizer.GenericColorizer):
     """
     default_color_map = {
         level_map['debug']: (Style.DIM + Fore.CYAN, Style.RESET_ALL),
-        level_map['info']: (Style.BRIGHT, Style.RESET_ALL),
+        level_map['info']: (Style.RESET_ALL, Style.RESET_ALL),
         'important': (Style.BRIGHT, Style.RESET_ALL),
         'success': (Fore.GREEN, Style.RESET_ALL),
         level_map['warning']: (Fore.YELLOW, Style.RESET_ALL),
