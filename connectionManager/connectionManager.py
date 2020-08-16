@@ -1,13 +1,16 @@
 import connectionManager.WSServer as WSServer
+from util import *
 
 import sys
 import functools
 import asyncio
 import signal
 import queue 
+import logging
 HOST = "localhost"
 PORT = 8990
 
+log = None
 async def shutdown(loop: asyncio.AbstractEventLoop):
     print("Nacking outstanding tasks")
     tasks = [t for t in asyncio.all_tasks() if t is not
@@ -31,6 +34,10 @@ async def command_loop(command_queue, *servers):
             await asyncio.gather(*[serv.sendall(command['data']) for serv in servers])
 
 def init(command_queue, host=HOST, websocket_port=PORT, rawsocekt_port=PORT + 1):
+    global log
+    create_logger(LOGGER_NAME_WS)
+    log = logging.getLogger(LOGGER_NAME_WS)
+
     loop = asyncio.get_event_loop()
     wsserver = WSServer.WSServer(host, websocket_port, loop)
 
