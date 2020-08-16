@@ -34,7 +34,7 @@ class BotBackendColorizer(chromalog.colorizer.GenericColorizer):
     }
 
 def create_logger(name: str='bot-backend', level: int=logging.DEBUG):
-    chromalog.basicConfig(format='%(levelname)s %(message)s', level=level, colorizer=BotBackendColorizer())
+    chromalog.basicConfig(format='%(levelname)s %(message)s', level=logging.ERROR, colorizer=BotBackendColorizer())
     log = logging.getLogger(name)
     log.setLevel(level)
     # file handler
