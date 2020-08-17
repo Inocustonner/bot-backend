@@ -16,7 +16,7 @@ function getArb(arbetel, id)
         { 
             bookmaker : arbetel.querySelectorAll(".content.bookmakerLinkContainer")[i].innerText,
             outcome : arbetel.querySelectorAll(".content.text-center.compareLinkContainer>a")[i].innerText,
-            koef : arbetel.querySelectorAll(".content.text-right.relative.outcomeKoef>a")[i].innerText,
+            koef : parseFloat(arbetel.querySelectorAll(".content.text-right.relative.outcomeKoef>a")[i].innerText),
             url : arbetel.querySelectorAll(".content.text-right.relative.outcomeKoef>a")[i].href
         };
         arb.bets.push(bet);
