@@ -1,0 +1,31 @@
+{
+  "name": "AllbestbetsParser",
+  "version": "0.01",
+  "description": "",
+  "manifest_version": 2,
+
+  "permissions": [
+    "background",
+    "activeTab",
+    "tabs",
+    "storage",
+    "webNavigation",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "background":
+  {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  
+  "content_scripts":
+  [
+    {
+      "matches": ["https://www.allbestbets.com/arbs/*"],
+      "run_at": "document_end",
+      "js": ["main.js"]
+    }
+  ]
+}
