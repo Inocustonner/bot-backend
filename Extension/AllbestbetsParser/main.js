@@ -14,7 +14,7 @@ function getArb(arbetel, id)
     {
         bet = 
         { 
-            bookmaker : arbetel.querySelectorAll(".content.bookmakerLinkContainer>.check_for_russia")[i].title,
+            bookmaker : arbetel.querySelectorAll(".content.bookmakerLinkContainer")[i].innerText,
             outcome : arbetel.querySelectorAll(".content.text-center.compareLinkContainer>a")[i].innerText,
             koef : arbetel.querySelectorAll(".content.text-right.relative.outcomeKoef>a")[i].innerText,
             url : arbetel.querySelectorAll(".content.text-right.relative.outcomeKoef>a")[i].href
