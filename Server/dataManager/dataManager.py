@@ -37,7 +37,7 @@ def store_data(sec: str, key: str, data: bytes) -> str:
     os.mkdir(sec_path)
 
   # key = date.fromtimestamp(time.time()).isoformat() + "_" + key
-  key_name = date.fromtimestamp(time.time()).isoformat() + "_" + key
+  key_name = date.fromtimestamp(time.time()).isoformat() + "_" + key.replace('/', '!')
   with Lock():
     if sec not in Props.props['sections']:
       Props.props['sections'][sec] = []
