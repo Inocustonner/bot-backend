@@ -35,7 +35,9 @@ def test_apply():
 
 @pytest.mark.dependency(depends=['adding'])    
 def test_serialization():
+    fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test.rts.yml')
     rts_prev = rts.copy()
-    save_rts()
-    load_rts()
+    save_rts(fpath)
+    load_rts(fpath)
     assert rts_prev == rts
+    os.remove(fpath)

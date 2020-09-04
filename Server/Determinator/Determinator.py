@@ -80,13 +80,15 @@ def apply_determinator(outcome: str) -> dict:
     section, bkoutcome = __apply(item)
     return json.dumps({'section': section, 'outcome': bkoutcome})
 
-def save_rts():
-    fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
+def save_rts(fpath: str=""):
+    if not fpath:
+        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
     with open(fpath, 'wb') as fstream:
         yaml.dump(rts, fstream)
         
-def load_rts():    
+def load_rts(fpath: str=""):    
     global rts
-    fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
+    if not fpath:
+        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
     with open(fpath, 'rb') as fstream:
         rts = yaml.load(fstream)
