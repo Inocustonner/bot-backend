@@ -64,3 +64,6 @@ def f_last_error(level: int = -1):
 
 def json_error(code: int, reason: str) -> str:
     return json.dumps({"error": {"code": code, "reason": reason}})
+
+def json_success() -> str:
+    return '{}'

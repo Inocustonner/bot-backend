@@ -1,5 +1,6 @@
 from dataManager.dataManager import init_manager, store_data, dump_props
 from util import json_error, f_last_error
+from Determinator.Determinator import *
 
 from flask import Flask, request
 from time import sleep
@@ -10,6 +11,29 @@ app = Flask("bot-backend")
 log = None
 # Queue for interprocess communication
 command_queue = None
+
+jsonify = json.dumps
+
+@app.route('/api/determinators/apply', methods=["POST"])
+def determinators_apply():
+    """ Edit determinators """
+    try:
+        return jsonify(json.loads(request.get_data().decode('utf8')))
+    except Exception as e:
+        return jsonify(json_error(-1, str(e)))
+
+@app.route('/api/determinators/remove')
+def determinators_remove():
+    return jsonify(remove_determinator(request.args.get('type')))
+
+@app.route('/api/determinators/get_determinators')
+def determinators_get():
+    return get_determinators()
+
+# Recives via query outcome, parses and return Section and Outcome for bk
+@app.route('/api/determinators/determine')
+def outcome():
+    return jsonify(apply_determinator(request.args.get('outcome')))
 
 @app.route('/api/')
 def index():
@@ -61,7 +85,9 @@ def start_flask():
     log = logging.getLogger('bot-backend')
     log.info(f'Flask is started on {host}:{port}')
     try:
+        load_rts()
         app.run('localhost', 5050)
     finally:
         # on flask exit
+        save_rts()
         dump_props()
