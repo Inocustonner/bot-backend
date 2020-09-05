@@ -9,7 +9,7 @@ log = logging.getLogger(LOGGER_NAME_WS)
 class WSServer(ServerTemplate):
     def __init__(self, host: str, port: str, loop: asyncio.AbstractEventLoop):
         self.server = websockets.serve(self.conn_handle, host=host, port=int(port), loop=loop)
-        log.info(f'WSServer is running on {host}:{port}')
+        log.info(f'WSServer is running on {host}:{port}') 
 
     def run(self):
         return self.server

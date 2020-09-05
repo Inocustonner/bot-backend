@@ -33,7 +33,7 @@ class BotBackendColorizer(chromalog.colorizer.GenericColorizer):
         level_map['critical']: (Fore.BLACK + Back.RED + Style.DIM, Style.RESET_ALL),
     }
 
-def create_logger(name: str='bot-backend', level: int=logging.DEBUG):
+def create_logger(name: str=LOGGER_NAME, level: int=logging.DEBUG):
     chromalog.basicConfig(format='%(levelname)s %(message)s', level=logging.ERROR, colorizer=BotBackendColorizer())
     log = logging.getLogger(name)
     log.setLevel(level)
