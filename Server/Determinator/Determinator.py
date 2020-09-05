@@ -78,7 +78,7 @@ def apply_determinator(outcome: str) -> dict:
         return json_error(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
-    return {'section': section, 'outcome': bkoutcome}
+    return {'section': f'`{section}`', 'outcome': f'`{bkoutcome}`'}
 
 def save_rts(fpath: str=""):
     if not fpath:
