@@ -30,13 +30,13 @@ CONF_FILE = 'rts.yml'
 
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
-    log.debug('\n\t'.join('RTS: adding - {', 
+    log.debug('\n\t'.join(['RTS: adding - {', 
                           f'comment: {comment}',
                           f'regex: {dt_regex}', 
                           f'vars: {dt_vars}',
                           f'section: {section}', 
                           f'bkoutcome: {bkoutcome}',
-                          '}'))
+                          '}']))
     if rts.get(dt_regex):
         return json_error(1, 'determinator with given regex already exists')
     else:
