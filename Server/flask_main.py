@@ -18,6 +18,7 @@ jsonify = json.dumps
 def determinators_apply():
     """ Edit determinators """
     try:
+        log.debug('Got: {}')
         data = json.loads(request.get_data().decode('utf8'))
         for key, values in data.items():
             add_determinator(key, values['regex'], values['vars'], values['section'], values['outcome'])
@@ -35,7 +36,7 @@ def determinators_get():
 
 # Recives via query outcome, parses and return Section and Outcome for bk
 @app.route('/api/determinators/determine')
-def outcome():
+def determine():
     return apply_determinator(request.args.get('outcome'))
 
 @app.route('/api/')

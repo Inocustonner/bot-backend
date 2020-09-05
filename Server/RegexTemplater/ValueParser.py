@@ -91,7 +91,8 @@ class ValueParser:
                 self.skipwh()
                 self.match(':')
                 self.skipwh()
-            conditional['~'] = lambda x: self.value()
+            self.otherwise_value = self.value()
+            conditional['~'] = lambda x: self.otherwise_value
         else:
             conditional['~'] = lambda x: x
         return g, conditional
