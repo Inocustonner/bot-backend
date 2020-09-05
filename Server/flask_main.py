@@ -18,7 +18,10 @@ jsonify = json.dumps
 def determinators_apply():
     """ Edit determinators """
     try:
-        return jsonify(json.loads(request.get_data().decode('utf8')))
+        data = json.loads(request.get_data().decode('utf8'))
+        for key, values in data.items():
+            add_determinator(key, values['regex'], values['vars'], values['section'], values['outcome'])
+        return json_success()
     except Exception as e:
         return jsonify(json_error(-1, str(e)))
 
