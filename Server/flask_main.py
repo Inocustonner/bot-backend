@@ -33,7 +33,7 @@ def determinators_get():
 # Recives via query outcome, parses and return Section and Outcome for bk
 @app.route('/api/determinators/determine')
 def outcome():
-    return jsonify(apply_determinator(request.args.get('outcome')))
+    return apply_determinator(request.args.get('outcome'))
 
 @app.route('/api/')
 def index():

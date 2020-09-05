@@ -25,7 +25,7 @@ def test_adding():
 @pytest.mark.dependency(depends=['adding'])
 def test_apply():
     def check(app):
-        return not json.loads(apply_determinator(app)).get('error', False)
+        return not apply_determinator(app).get('error', False)
     app1 = "Тб(1) - для первой команды"
     app2 = "Ф1(3) для команды`"
     fail3 = "Ф3(3) для команды"

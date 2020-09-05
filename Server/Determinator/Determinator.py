@@ -55,7 +55,7 @@ def get_determinators() -> str:
             return o.revars
     return json.dumps(rts, default=default)
 
-def apply_determinator(outcome: str) -> dict:
+def apply_determinator(outcome: str) -> str:
     # Add caching !!!
     def __apply(rts_item: Tuple[str, Dict]) -> Tuple[str, str]: 
         comment, rts_body = rts_item
@@ -78,7 +78,7 @@ def apply_determinator(outcome: str) -> dict:
         return json_error(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
-    return {'section': f'`{section}`', 'outcome': f'`{bkoutcome}`'}
+    return json.dumps({'section': f'`{section}`', 'outcome': f'`{bkoutcome}`'})
 
 def save_rts(fpath: str=""):
     if not fpath:
