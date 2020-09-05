@@ -83,6 +83,7 @@ def apply_determinator(outcome: str) -> str:
 def save_rts(fpath: str=""):
     if not fpath:
         fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
+    log.info(f"Saving rts to '{fpath}'")
     with open(fpath, 'wb') as fstream:
         yaml.dump(rts, fstream)
         
@@ -90,5 +91,10 @@ def load_rts(fpath: str=""):
     global rts
     if not fpath:
         fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
-    with open(fpath, 'rb') as fstream:
-        rts = yaml.load(fstream)
+    if os.path.exists(fpath):
+        log.info(f"Loading rts from '{fpath}'")
+        with open(fpath, 'rb') as fstream:
+            rts = yaml.load(fstream)
+    else:
+        log.info(f"Creating empty rts")
+        rts = {}
