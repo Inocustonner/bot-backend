@@ -27,9 +27,17 @@ rts = {
 rts = {}
 CONF_FILE = 'rts.yml'
 
+def ensure_fullstring_match(regex: str) -> str:
+    if not regex.endswith('$'):
+        regex += '$'
+    if not regex.startswith('^'):
+        regex += '^'
+    return regex
 
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
+    dt_regex = ensure_fullstring_match(dt_regex)
+    
     log.debug('\n\t'.join(['RTS: adding - {', 
                           f'comment: {comment}',
                           f'regex: {dt_regex}', 
@@ -41,7 +49,7 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
         return json_error(1, 'determinator with given regex already exists')
     else:
         try:
-            rt = RT(dt_regex, dt_vars)
+            rt = RT(dt_regex, dt_vars, True)
             rts[comment] = {
                 'regex': dt_regex,
                 'rt': rt,

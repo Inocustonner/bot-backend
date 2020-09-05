@@ -14,11 +14,11 @@ callOnObject = operator.methodcaller
 class RT:
     yaml_tag = '!RT'
     splitter = '%=%'
-    def __init__(self, regex: str, revars: Dict[str, str], replace_spaces = True):
+    def __init__(self, regex: str, revars: Dict[str, str], replace_spaces_with_optional_spaces = True):
         self.regex = regex
         self.compiled = ""
-        if replace_spaces:
-            self.regex = '\s*'.join(self.regex.split(' '))
+        if replace_spaces_with_optional_spaces:
+            self.regex = r'\s*'.join(self.regex.split())
         self.revars = revars #revars - regex variables
         self.compiled_vars = dict()
         self.__verifyRevars()
