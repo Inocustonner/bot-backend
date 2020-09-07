@@ -18,7 +18,7 @@ def test_adding():
     for a in data:
         comment = a['comment']
         assert comment in dets
-        assert a['regex'] == dets[comment]['regex']
+        assert a['regex'] in dets[comment]['regex']
         assert a['section'] == dets[comment]['section']
         assert a['outcome'] == dets[comment]['outcome']
         

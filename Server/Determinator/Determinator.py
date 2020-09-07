@@ -31,7 +31,7 @@ def ensure_fullstring_match(regex: str) -> str:
     if not regex.endswith('$'):
         regex += '$'
     if not regex.startswith('^'):
-        regex += '^'
+        regex = '^' + regex
     return regex
 
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
@@ -99,7 +99,7 @@ def apply_determinator(outcome: str) -> str:
     result = tuple()
     item = next(itertools.dropwhile(__not_match, rts.items()), None)
     if not item:
-        log.debug(f'RTS: coulndn\'apply for{outcome}, appropriate regex was not found')
+        log.debug(f'RTS: coulndn\'apply for {outcome}, appropriate regex was not found')
         return json_error(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
