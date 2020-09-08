@@ -9,6 +9,7 @@ import json
 import multiprocessing
 import itertools
 import os.path
+import re
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -37,6 +38,7 @@ def ensure_fullstring_match(regex: str) -> str:
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
     dt_regex = ensure_fullstring_match(dt_regex)
+
     if section:
         section = ensure_fullstring_match(section)
     bkoutcome = ensure_fullstring_match(bkoutcome)
@@ -107,6 +109,10 @@ def apply_determinator(outcome: str) -> str:
     # we sure it matches
     section, bkoutcome = __apply(item)
     log.debug(f'RTS: For {outcome} returning - ({section}, {bkoutcome})')
+        # replace \( with \\\\(
+    section = re.sub(r'(?<=[^\\])\\(?=[\w()])', '\\\\', section)
+    bkoutcome = re.sub(r'(?<=[^\\])\\(?=[\w()])', '\\\\', bkoutcome)
+    
     return json.dumps({'section': f'`{section}`', 'outcome': f'`{bkoutcome}`'})
 
 

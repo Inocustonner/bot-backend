@@ -19,8 +19,8 @@ def test_adding():
         comment = a['comment']
         assert comment in dets
         assert a['regex'] in dets[comment]['regex']
-        assert a['section'] == dets[comment]['section']
-        assert a['outcome'] == dets[comment]['outcome']
+        assert a['section'] in dets[comment]['section']
+        assert a['outcome'] in dets[comment]['outcome']
         
 @pytest.mark.dependency(depends=['adding'])
 def test_apply():
