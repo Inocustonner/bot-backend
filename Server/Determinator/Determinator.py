@@ -37,9 +37,10 @@ def ensure_fullstring_match(regex: str) -> str:
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
     dt_regex = ensure_fullstring_match(dt_regex)
-    section = ensure_fullstring_match(section)
+    if section:
+        section = ensure_fullstring_match(section)
     bkoutcome = ensure_fullstring_match(bkoutcome)
-    
+
     log.debug('\n\t'.join(['RTS: adding - {', 
                           f'comment: {comment}',
                           f'regex: {dt_regex}', 
