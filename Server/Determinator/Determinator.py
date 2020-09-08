@@ -110,9 +110,10 @@ def apply_determinator(outcome: str) -> str:
     section, bkoutcome = __apply(item)
     log.debug(f'RTS: For {outcome} returning - ({section}, {bkoutcome})')
         # replace \( with \\\\(
-    section = re.sub(r'(?<=[^\\])\\(?=[\w()])', '\\\\', section)
-    bkoutcome = re.sub(r'(?<=[^\\])\\(?=[\w()])', '\\\\', bkoutcome)
-    
+    # section = re.sub(r'(?<=[^\\])\\(?=[\w().])', '\\\\', section)
+    # bkoutcome = re.sub(r'(?<=[^\\])\\(?=[\w().])', '\\\\', bkoutcome)
+    section = section.replace('\\', '\\' * 2)
+    bkoutcome = bkoutcome.replace('\\', '\\' * 2)
     return json.dumps({'section': f'`{section}`', 'outcome': f'`{bkoutcome}`'})
 
 
