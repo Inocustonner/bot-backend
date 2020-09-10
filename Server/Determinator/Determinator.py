@@ -179,14 +179,11 @@ def load_rts(fpath: str = ""):
     fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             BACKUP_FILE_PREFIX + CONF_FILE)
     if os.path.exists(fpath) and __load_rts(fpath): 
-        log.debug(pp.pformat(rts))
         return
 
     # if failed to load from CONF_FILE and backup exists try to load backup
     if os.path.exists(fbackup) and __load_rts(fbackup):
         global loaded_from_backup
         loaded_from_backup = True 
-        log.debug(pp.pformat(rts))
         return
     create_rts()
-    log.debug(pp.pformat(rts))
