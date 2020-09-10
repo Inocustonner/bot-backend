@@ -30,6 +30,7 @@ rts = {
 }
 """
 rts = {}
+loaded_from_backup = False
 CONF_FILE = 'rts.yml'
 BACKUP_FILE_PREFIX = '~back.'
 
@@ -138,13 +139,15 @@ def apply_determinator(outcome: str) -> str:
 
 
 def save_rts(fpath: str = ""):
+    global rts
+    global loaded_from_backup
     if not fpath:
         fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              CONF_FILE)
     fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              BACKUP_FILE_PREFIX + CONF_FILE)
     # create copy in case something fails
-    if os.path.exists(fpath):
+    if os.path.exists(fpath) and not loaded_from_backup:
         shutil.copyfile(fpath, fbackup)
     log.info(f"Saving rts to '{fpath}'")
     try:
@@ -178,5 +181,8 @@ def load_rts(fpath: str = ""):
     if os.path.exists(fpath) and __load_rts(fpath): return
 
     # if failed to load from CONF_FILE and backup exists try to load backup
-    if os.path.exists(fbackup) and __load_rts(fbackup): return
+    if os.path.exists(fbackup) and __load_rts(fbackup):
+        global loaded_from_backup
+        loaded_from_backup = True 
+        return
     create_rts()
