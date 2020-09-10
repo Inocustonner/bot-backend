@@ -39,8 +39,10 @@ class RT:
             if not isvalidvar(key):
                 raise SyntaxError(
                     f"Variable '{key}' not suffice variable name constraints")
-            if self.regex.count(key) != 1:
+            if self.regex.count(key) > 1:
                 raise SyntaxError("Each variable should occure only once")
+            elif self.regex.count(key) == 0:
+                raise SyntaxError("Each variable should occure at least once")
 
     def __compileRegex(self):
         piped = pipe(

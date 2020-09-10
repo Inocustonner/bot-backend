@@ -30,12 +30,14 @@ rts = {
 rts = {}
 CONF_FILE = 'rts.yml'
 
+
 def ensure_fullstring_match(regex: str) -> str:
     if not regex.endswith('$'):
         regex += '$'
     if not regex.startswith('^'):
         regex = '^' + regex
     return regex
+
 
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
@@ -46,13 +48,11 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
         section = ensure_fullstring_match(section)
     bkoutcome = ensure_fullstring_match(bkoutcome)
 
-    log.debug('\n\t'.join(['RTS: adding - {', 
-                          f'comment: {comment}',
-                          f'regex: {dt_regex}', 
-                          f'vars: {dt_vars}',
-                          f'section: {section}', 
-                          f'bkoutcome: {bkoutcome}',
-                          '}']))
+    log.debug('\n\t'.join([
+        'RTS: adding - {', f'comment: {comment}', f'regex: {dt_regex}',
+        f'vars: {dt_vars}', f'section: {section}', f'bkoutcome: {bkoutcome}',
+        '}'
+    ]))
     try:
         rt = RT(dt_regex, dt_vars, True)
         rts[comment] = {
@@ -78,10 +78,14 @@ def remove_determinator(comment: str) -> dict:
 
 def get_determinators() -> str:
     global rts
+
     def default(o):
         if type(o) is RT:
             return o.revars
-    return json.dumps(rts, default=default).replace('"rt":', '"vars":') # for front end
+
+    return json.dumps(rts,
+                      default=default).replace('"rt":', '"vars":').replace(
+                          '"^', '"').replace('$"', '"')  # for front end
 
 
 def apply_determinator(outcome: str) -> str:
@@ -106,12 +110,14 @@ def apply_determinator(outcome: str) -> str:
     result = tuple()
     item = next(itertools.dropwhile(__not_match, rts.items()), None)
     if not item:
-        log.debug(f'RTS: coulndn\'apply for {outcome}, appropriate regex was not found')
+        log.debug(
+            f'RTS: coulndn\'apply for {outcome}, appropriate regex was not found'
+        )
         return json_error_str(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
     log.debug(f'RTS: For {outcome} returning - ({section}, {bkoutcome})')
-        # replace \( with \\\\(
+    # replace \( with \\\\(
     # section = re.sub(r'(?<=[^\\])\\(?=[\w().])', '\\\\', section)
     # bkoutcome = re.sub(r'(?<=[^\\])\\(?=[\w().])', '\\\\', bkoutcome)
     section = section.replace('\\', '\\' * 2)
