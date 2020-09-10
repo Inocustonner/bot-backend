@@ -186,3 +186,4 @@ def load_rts(fpath: str = ""):
         loaded_from_backup = True 
         return
     create_rts()
+    log.debug(pp.pformat(rts))
