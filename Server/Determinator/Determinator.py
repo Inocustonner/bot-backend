@@ -147,7 +147,7 @@ def save_rts(fpath: str = ""):
     fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              BACKUP_FILE_PREFIX + CONF_FILE)
     # create copy in case something fails
-    if os.path.exists(fpath) and not loaded_from_backup:
+    if os.path.exists(fpath) and not loaded_from_backup and len(rts):
         shutil.copyfile(fpath, fbackup)
     log.info(f"Saving rts to '{fpath}'")
     try:
