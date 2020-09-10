@@ -98,20 +98,19 @@ def apply_determinator(outcome: str) -> str:
     def __apply(rts_item: Tuple[str, Dict]) -> Tuple[str, str]:
         comment, rts_body = rts_item
         vrs = rts_body['rt'].apply(outcome)
-        print(pp.pformat(vrs))
         # kp = KeywordProcessor()
+        bkoutcome = rts_body['outcome'][:]
+        section = rts_body['section'][:]
         for key, value in vrs.items():
             if (runtime_var := runtime_vars.get(value, None)):
                 vrs[key] = runtime_var
-            rts_body['outcome'] = rts_body['outcome'].replace(key, vrs[key])
-            rts_body['section'] = rts_body['section'].replace(key, vrs[key])
+            bkoutcome = bkoutcome.replace(key, vrs[key])
+            section = section.replace(key, vrs[key])
             # kp.add_keyword(key, vrs[key])
             
         #kp.replace_keyword doesn't replace '$n' in '\w$n$' string
         # section = kp.replace_keywords(rts_body['section'])
         # bkoutcome = kp.replace_keywords(rts_body['outcome'])
-        bkoutcome = rts_body['outcome']
-        section = rts_body['section']
         return section, bkoutcome
 
     def __not_match(rts_item: Tuple[str, Dict]) -> bool:
