@@ -1,6 +1,7 @@
 **__pycache__/
 **/.vscode
 **/.*
+**/~$*.doc*
 Server/venv
 Server/data/*
 Server/Determinator/rts.yml
