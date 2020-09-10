@@ -29,7 +29,8 @@ def determinators_apply():
 
 @app.route('/api/determinators/remove', methods=["POST"])
 def determinators_remove():
-    return jsonify(remove_determinator(request.args.get('type')))
+    comment = json.loads(request.get_data().decode('utf8'))['type']
+    return jsonify(remove_determinator(comment))
 
 @app.route('/api/determinators/get_determinators')
 def determinators_get():
