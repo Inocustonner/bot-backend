@@ -25,13 +25,17 @@ def test_adding():
 @pytest.mark.dependency(depends=['adding'])
 def test_apply():
     def check(app):
-        return not json.loads(apply_determinator(app)).get('error', False)
+        ans = json.loads(apply_determinator(app))
+        print(app, ans)
+        return not ans.get('error', False)
     app1 = "Тб(1) - для первой команды"
     app2 = "Ф1(3) для команды`"
     fail3 = "Ф3(3) для команды"
+    app4 = "3"
     assert check(app1)
     assert check(app2)
     assert not check(fail3)
+    assert check(app4)
 
 @pytest.mark.dependency(depends=['adding'])    
 def test_serialization():

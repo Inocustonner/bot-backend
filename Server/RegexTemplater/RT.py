@@ -1,4 +1,7 @@
-from RegexTemplater.ValueParser import isvalidvar, runParser
+try:
+    from RegexTemplater.ValueParser import isvalidvar, runParser
+except:
+    from ValueParser import isvalidvar, runParser
 
 from typing import Dict, Optional
 from toolz.functoolz import pipe
@@ -6,6 +9,7 @@ from ruamel.yaml import YAML, yaml_object
 import json
 import re
 import operator
+
 callOnObject = operator.methodcaller
 # RegexTemplater
 # Takes initial regex and revars, compiles them
@@ -15,14 +19,14 @@ class RT:
     yaml_tag = '!RT'
     splitter = '%=%'
     def __init__(self, regex: str, revars: Dict[str, str], replace_spaces_with_optional_spaces = True):
-        self.regex = regex
+        self.regex = regex.strip()
         self.compiled = ""
         if replace_spaces_with_optional_spaces:
             self.regex = r'\s*'.join(self.regex.split())
-        self.revars = revars #revars - regex variables
-        self.compiled_vars = dict()
-        self.__verifyRevars()
-        self.__compileRegex()
+            self.revars = revars #revars - regex variables
+            self.compiled_vars = dict()
+            self.__verifyRevars()
+            self.__compileRegex()
 
     @classmethod
     def to_yaml(cls, representer, node):
@@ -46,11 +50,11 @@ class RT:
 
     def __compileRegex(self):
         piped = pipe(
-                self.regex, *[
-                    callOnObject('replace', key,
-                                 rf'(?P<{key[1:]}>{self.__preparevalue(key[1:], value)})', 1)
+            self.regex, *[
+                callOnObject('replace', key,
+                             rf'(?P<{key[1:]}>{self.__preparevalue(key[1:], value)})', 1)
                     for key, value in self.revars.items()
-                ])
+            ])
         self.compiled = re.compile(piped)
 
     def __preparevalue(self, key: str, val: str) -> str:
@@ -74,11 +78,11 @@ class RT:
 
 if __name__ == "__main__":
     r=RT(
-        "$Тотал \($p\) - для $team команды", {
-            '$Тотал': "(Тотал (меньше|больше))",
-            '$p': "(\d+)",
-            '$team': '(\w+) ? "первой" -> $team1 : $team2'
-    })
-    print(r.apply("Тотал больше (3) - для первой команды"))
+        "$nomTeam", {
+            "$nomTeam": "(\d)"
+        })
+    print(r.regex)
+    print(r.compiled)
+    print(r.apply("13"))
     # https://github.com/vi3k6i5/flashtext
     # for fast replacement

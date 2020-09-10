@@ -94,14 +94,21 @@ def apply_determinator(outcome: str) -> str:
     def __apply(rts_item: Tuple[str, Dict]) -> Tuple[str, str]:
         comment, rts_body = rts_item
         vrs = rts_body['rt'].apply(outcome)
-        kp = KeywordProcessor()
+        print(pp.pformat(vrs))
+        # kp = KeywordProcessor()
         for key, value in vrs.items():
             if (runtime_var := runtime_vars.get(value, None)):
                 vrs[key] = runtime_var
-            kp.add_keyword(key, vrs[key])
-
-        return kp.replace_keywords(rts_body['section']), kp.replace_keywords(
-            rts_body['outcome'])
+            rts_body['outcome'] = rts_body['outcome'].replace(key, vrs[key])
+            rts_body['section'] = rts_body['section'].replace(key, vrs[key])
+            # kp.add_keyword(key, vrs[key])
+            
+        #kp.replace_keyword doesn't replace '$n' in '\w$n$' string
+        # section = kp.replace_keywords(rts_body['section'])
+        # bkoutcome = kp.replace_keywords(rts_body['outcome'])
+        bkoutcome = rts_body['outcome']
+        section = rts_body['section']
+        return section, bkoutcome
 
     def __not_match(rts_item: Tuple[str, Dict]) -> bool:
         _, rts_body = rts_item
@@ -117,6 +124,7 @@ def apply_determinator(outcome: str) -> str:
         return json_error_str(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
+    
     log.debug(f'RTS: For {outcome} returning - ({section}, {bkoutcome})')
     # replace \( with \\\\(
     # section = re.sub(r'(?<=[^\\])\\(?=[\w().])', '\\\\', section)
