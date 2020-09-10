@@ -1,5 +1,5 @@
 from dataManager.dataManager import init_manager, store_data, dump_props
-from util import json_error, f_last_error
+from util import json_error_str, f_last_error
 from Determinator.Determinator import *
 
 from flask import Flask, request
@@ -25,7 +25,7 @@ def determinators_apply():
             if (ret.get('error')): break
         return ret
     except Exception as e:
-        return jsonify(json_error(-1, str(e)))
+        return json_error_str(-1, str(e))
 
 @app.route('/api/determinators/remove')
 def determinators_remove():

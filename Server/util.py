@@ -62,8 +62,14 @@ def f_last_error(level: int = -1):
     ex = traceback.format_exc().splitlines(True)
     return s + s.join(ex)[:-1]
 
-def json_error(code: int, reason: str) -> str:
-    return json.dumps({"error": {"code": code, "reason": reason}})
+def json_error(code: int, reason: str) -> dict:
+    return {"error": {"code": code, "reason": reason}}
 
-def json_success() -> str:
-    return '{}'
+def json_error_str(code: int, reason: str) -> str:
+    return json.dumps(json_error(code, reason))
+
+def json_success() -> dict:
+    return {}
+
+def json_success_str() -> str:
+    return json.dumps(json_success())

@@ -3,7 +3,7 @@ from ruamel.yaml import YAML
 from datetime import date
 import time
 from threading import Lock
-from util import json_error, LOGGER_NAME
+from util import json_error_str, LOGGER_NAME
 import logging
 import json
 # from typing import Dict
@@ -49,4 +49,4 @@ def store_data(sec: str, key: str, data: bytes) -> str:
         f.write(data)
       return json.dumps({"success": {"key": key_name}})
     else:
-      return json_error(1, "Key already exists")
+      return json_error_str(1, "Key already exists")

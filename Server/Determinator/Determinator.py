@@ -1,5 +1,5 @@
 from RegexTemplater.RT import RT
-from util import json_success, json_error, LOGGER_NAME
+from util import *
 from flashtext import KeywordProcessor
 
 from typing import Dict, Tuple
@@ -107,7 +107,7 @@ def apply_determinator(outcome: str) -> str:
     item = next(itertools.dropwhile(__not_match, rts.items()), None)
     if not item:
         log.debug(f'RTS: coulndn\'apply for {outcome}, appropriate regex was not found')
-        return json_error(1, "Not found")
+        return json_error_str(1, "Not found")
     # we sure it matches
     section, bkoutcome = __apply(item)
     log.debug(f'RTS: For {outcome} returning - ({section}, {bkoutcome})')
