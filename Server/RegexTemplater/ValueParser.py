@@ -65,7 +65,7 @@ class ValueParser:
             self.match('$')
             val = '$' + ''.join(list(takewhile(lambda c: c != ':' and not c.isspace(), self.v[self.p :])))
             if not isvalidvar(val): 
-                raise SyntaxError(f"Variable '{val}' not suffice variable name constraints")
+                raise SyntaxError(f"Variable '{val}' does not suffice variable name constraints")
             self.advance(len(val))
         return val
     
