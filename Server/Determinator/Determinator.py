@@ -78,7 +78,10 @@ def get_determinators() -> str:
     def default(o):
         if type(o) is RT:
             return o.revars
-
+    dump_rts = rts.copy()
+    for key, val in dump_rts:
+        dump_rts[key]['vars'] = dump_rts[key]['rt']
+        del dump_rts[key]['rt']
     return json.dumps(rts, default=default)
 
 
