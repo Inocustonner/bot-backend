@@ -36,11 +36,6 @@ class RT:
     @classmethod
     def from_yaml(cls, constructor, node):
         regex, revars_str = node.value.split(cls.splitter, 1)
-        print(regex)
-        print(revars_str)
-        c = cls(regex, json.loads(revars_str), False)
-        print(vars(c))
-        print(c.revars)
         return cls(regex, json.loads(revars_str), False)
 
     def __verifyRevars(self):
