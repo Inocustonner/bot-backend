@@ -42,6 +42,8 @@ def ensure_fullstring_match(regex: str) -> str:
 def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                      section: str, bkoutcome: str) -> dict:
     global rts
+    if comment == '':
+        return json_error(3, 'Empty type is not allowed')
     dt_regex = ensure_fullstring_match(dt_regex)
 
     if section:
