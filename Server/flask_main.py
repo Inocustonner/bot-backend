@@ -22,17 +22,17 @@ def determinators_apply():
         log.debug(f'Got: {data}')
         for key, values in data.items():
             ret = add_determinator(key, values['regex'], values['vars'], values['section'], values['outcome'])
-            if (ret.get('error')): return 400, ret
+            if (ret.get('error')): return ret, 400
         return ret
     except Exception as e:
-        return 400, json_error_str(-1, str(e))
+        return json_error_str(-1, str(e)), 400
 
 @app.route('/api/determinators/remove', methods=["POST"])
 def determinators_remove():
     comment = json.loads(request.get_data().decode('utf8'))['type']
     ret = remove_determinator(comment)
     code = 400 if ret.get('error') else 200
-    return code, jsonify(ret)
+    return jsonify(ret), code
 
 @app.route('/api/determinators/get_determinators')
 def determinators_get():
