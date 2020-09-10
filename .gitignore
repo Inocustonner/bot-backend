@@ -2,6 +2,6 @@
 **/.vscode
 **/.*
 **/~$*.doc*
-Server/venv
+*/venv/
 Server/data/*
 Server/Determinator/rts.yml
