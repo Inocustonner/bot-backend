@@ -50,8 +50,8 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
     dt_regex = ensure_fullstring_match(dt_regex)
 
     if section:
-        section = ensure_fullstring_match(section)
-    bkoutcome = ensure_fullstring_match(bkoutcome)
+        section = r'\s*'.join(ensure_fullstring_match(section).split()) 
+    bkoutcome = r'\s*'.join(ensure_fullstring_match(bkoutcome).split())
 
     log.debug('\n\t'.join([
         'RTS: adding - {', f'comment: {comment}', f'regex: {dt_regex}',

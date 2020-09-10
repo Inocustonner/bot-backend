@@ -15,24 +15,31 @@ callOnObject = operator.methodcaller
 # Takes initial regex and revars, compiles them
 # and exports function to apply regex to a string
 
+
 class RT:
     yaml_tag = '!RT'
     splitter = '%=%'
-    def __init__(self, regex: str, revars: Dict[str, str], replace_spaces_with_optional_spaces = True):
+
+    def __init__(self,
+                 regex: str,
+                 revars: Dict[str, str],
+                 replace_spaces_with_optional_spaces=True):
         self.regex = regex.strip()
         self.compiled = ""
         if replace_spaces_with_optional_spaces:
             self.regex = r'\s*'.join(self.regex.split())
-        self.revars = revars #revars - regex variables
+
+        self.revars = revars  #revars - regex variables
         self.compiled_vars = dict()
         self.__verifyRevars()
         self.__compileRegex()
 
     @classmethod
     def to_yaml(cls, representer, node):
-        return representer.represent_scalar(cls.yaml_tag,
-                                            fR'{node.regex}{cls.splitter}{json.dumps(node.revars)}')
-    
+        return representer.represent_scalar(
+            cls.yaml_tag,
+            fR'{node.regex}{cls.splitter}{json.dumps(node.revars)}')
+
     @classmethod
     def from_yaml(cls, constructor, node):
         regex, revars_str = node.value.split(cls.splitter, 1)
@@ -51,9 +58,10 @@ class RT:
     def __compileRegex(self):
         piped = pipe(
             self.regex, *[
-                callOnObject('replace', key,
-                             rf'(?P<{key[1:]}>{self.__preparevalue(key[1:], value)})', 1)
-                    for key, value in self.revars.items()
+                callOnObject(
+                    'replace', key,
+                    rf'(?P<{key[1:]}>{self.__preparevalue(key[1:], value)})',
+                    1) for key, value in self.revars.items()
             ])
         self.compiled = re.compile(piped)
 
@@ -63,11 +71,12 @@ class RT:
         return pattern
 
     def __eval_vars(self, matched_groups: dict) -> Dict[str, str]:
-        var_dict = { # apply post-branching
+        var_dict = {  # apply post-branching
             k: self.compiled_vars[k].get(v, self.compiled_vars[k]['~'](v))
             for k, v in matched_groups.items()
         }
-        return dict(map(lambda item: ('$' + item[0], item[1]), var_dict.items()))
+        return dict(
+            map(lambda item: ('$' + item[0], item[1]), var_dict.items()))
 
     def apply(self, string: str) -> Optional[Dict[str, str]]:
         if (m := self.compiled.fullmatch(string)):
@@ -77,10 +86,7 @@ class RT:
 
 
 if __name__ == "__main__":
-    r=RT(
-        "$nomTeam", {
-            "$nomTeam": "(\d)"
-        })
+    r = RT("$nomTeam", {"$nomTeam": "(\d)"})
     print(r.regex)
     print(r.compiled)
     print(r.apply("13"))
