@@ -10,8 +10,10 @@ import multiprocessing
 import itertools
 import os.path
 import re
+import pprint
 
 log = logging.getLogger(LOGGER_NAME)
+pp = pprint.PrettyPrinter(2)
 
 yaml = ruamel.yaml.YAML()
 yaml.register_class(RT)
@@ -51,20 +53,18 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
                           f'section: {section}', 
                           f'bkoutcome: {bkoutcome}',
                           '}']))
-    if rts.get(dt_regex):
-        return json_error(1, 'determinator with given regex already exists')
-    else:
-        try:
-            rt = RT(dt_regex, dt_vars, True)
-            rts[comment] = {
-                'regex': dt_regex,
-                'rt': rt,
-                'section': section,
-                'outcome': bkoutcome
-            }
-        except Exception as e:
-            return json_error(2, str(e))
-        return json_success()
+    try:
+        rt = RT(dt_regex, dt_vars, True)
+        rts[comment] = {
+            'regex': dt_regex,
+            'rt': rt,
+            'section': section,
+            'outcome': bkoutcome
+        }
+        log.debug(f'New rts \n{pp.pformat(rts)}')
+    except Exception as e:
+        return json_error(2, str(e))
+    return json_success()
 
 
 def remove_determinator(comment: str) -> dict:
@@ -76,6 +76,7 @@ def remove_determinator(comment: str) -> dict:
 
 
 def get_determinators() -> str:
+    global rts
     def default(o):
         if type(o) is RT:
             return o.revars
