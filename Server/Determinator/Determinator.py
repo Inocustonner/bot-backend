@@ -165,8 +165,8 @@ def load_rts(fpath: str = ""):
 
     def __load_rts(path: str) -> bool:
         global rts
-        log.info(f"Loading rts from '{fpath}'")
-        with open(fpath, 'rb') as fstream:
+        log.info(f"Loading rts from '{path}'")
+        with open(path, 'rb') as fstream:
             rts = yaml.load(fstream)
             return bool(rts)
 
