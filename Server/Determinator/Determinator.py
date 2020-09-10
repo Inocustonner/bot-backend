@@ -11,6 +11,8 @@ import itertools
 import os.path
 import re
 import pprint
+import os
+import shutil
 
 log = logging.getLogger(LOGGER_NAME)
 pp = pprint.PrettyPrinter(2)
@@ -29,7 +31,7 @@ rts = {
 """
 rts = {}
 CONF_FILE = 'rts.yml'
-
+BACKUP_FILE_PREFIX = '~back.'
 
 def ensure_fullstring_match(regex: str) -> str:
     if not regex.endswith('$'):
@@ -64,7 +66,7 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
             'outcome': bkoutcome
         }
     except Exception as e:
-        log.debug(f_last_error())
+        log.error(f_last_error(logging.ERROR))
         return json_error(2, str(e))
     return json_success()
 
@@ -139,24 +141,42 @@ def save_rts(fpath: str = ""):
     if not fpath:
         fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              CONF_FILE)
+    fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             BACKUP_FILE_PREFIX + CONF_FILE)
+    # create copy in case something fails
+    if os.path.exists(fpath):
+        shutil.copyfile(fpath, fbackup)
     log.info(f"Saving rts to '{fpath}'")
-    with open(fpath, 'wb') as fstream:
-        yaml.dump(rts, fstream)
+    try:
+        with open(fpath, 'wb') as fstream:
+            yaml.dump(rts, fstream)
+    except Exception as e:
+        log.error(f_last_error(logging.ERROR))
+        os.remove(fpath)
+        shutil.copyfile(fbackup, fpath)
+        log.info(f'Restoring from backup {fbackup}')
 
 
 def load_rts(fpath: str = ""):
-    global rts
     def create_rts():
         global rts
         log.info(f"Creating empty rts")
         rts = {}
 
-    if not fpath:
-        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             CONF_FILE)
-    if os.path.exists(fpath):
+    def __load_rts(path: str) -> bool:
+        global rts
         log.info(f"Loading rts from '{fpath}'")
         with open(fpath, 'rb') as fstream:
             rts = yaml.load(fstream)
-            if rts: return
+            return bool(rts)
+
+    if not fpath:
+        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             CONF_FILE)
+    fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            BACKUP_FILE_PREFIX + CONF_FILE)
+    if os.path.exists(fpath) and __load_rts(fpath): return
+
+    # if failed to load from CONF_FILE and backup exists try to load backup
+    if os.path.exists(fbackup) and __load_rts(fbackup): return
     create_rts()
