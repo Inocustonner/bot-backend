@@ -64,7 +64,7 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
             'outcome': bkoutcome
         }
     except Exception as e:
-        log.debug(e)
+        log.debug(traceback.print_tb(e))
         return json_error(2, str(e))
     return json_success()
 
@@ -146,6 +146,11 @@ def save_rts(fpath: str = ""):
 
 def load_rts(fpath: str = ""):
     global rts
+    def create_rts():
+        global rts
+        log.info(f"Creating empty rts")
+        rts = {}
+
     if not fpath:
         fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              CONF_FILE)
@@ -153,6 +158,5 @@ def load_rts(fpath: str = ""):
         log.info(f"Loading rts from '{fpath}'")
         with open(fpath, 'rb') as fstream:
             rts = yaml.load(fstream)
-    else:
-        log.info(f"Creating empty rts")
-        rts = {}
+            if rts: return
+    create_rts()
