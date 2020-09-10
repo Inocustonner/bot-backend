@@ -63,7 +63,6 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
             'section': section,
             'outcome': bkoutcome
         }
-        log.debug(f'New rts \n{pp.pformat(rts)}')
     except Exception as e:
         log.debug(e)
         return json_error(2, str(e))
