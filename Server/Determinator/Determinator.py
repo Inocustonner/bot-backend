@@ -11,6 +11,7 @@ import itertools
 import os.path
 import re
 import pprint
+import traceback
 
 log = logging.getLogger(LOGGER_NAME)
 pp = pprint.PrettyPrinter(2)
