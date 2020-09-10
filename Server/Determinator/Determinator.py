@@ -90,6 +90,7 @@ def get_determinators() -> str:
 
 
 def apply_determinator(outcome: str) -> str:
+    global rts
     # Add caching !!!
     def __apply(rts_item: Tuple[str, Dict]) -> Tuple[str, str]:
         comment, rts_body = rts_item
