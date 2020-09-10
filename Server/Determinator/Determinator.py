@@ -65,7 +65,7 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
             'outcome': bkoutcome
         }
     except Exception as e:
-        log.debug(traceback.print_tb(e))
+        log.debug(traceback.format_tb(e))
         return json_error(2, str(e))
     return json_success()
 
