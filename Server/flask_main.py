@@ -27,7 +27,7 @@ def determinators_apply():
     except Exception as e:
         return json_error_str(-1, str(e))
 
-@app.route('/api/determinators/remove')
+@app.route('/api/determinators/remove', methods=["POST"])
 def determinators_remove():
     return jsonify(remove_determinator(request.args.get('type')))
 

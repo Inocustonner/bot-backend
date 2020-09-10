@@ -75,7 +75,7 @@ def remove_determinator(comment: str) -> dict:
     else:
         return json_error(2, "key doesn't exists")
 
-
+# ONLY FOR FRONT-END bcs returns formatted version of rts
 def get_determinators() -> str:
     global rts
 
