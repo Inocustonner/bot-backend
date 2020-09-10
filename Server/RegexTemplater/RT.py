@@ -1,7 +1,7 @@
-try:
-    from RegexTemplater.ValueParser import isvalidvar, runParser
-except:
-    from ValueParser import isvalidvar, runParser
+# try:
+from RegexTemplater.ValueParser import isvalidvar, runParser
+# except ImportError:
+#     from ValueParser import isvalidvar, runParser
 
 from typing import Dict, Optional
 from toolz.functoolz import pipe
@@ -23,10 +23,10 @@ class RT:
         self.compiled = ""
         if replace_spaces_with_optional_spaces:
             self.regex = r'\s*'.join(self.regex.split())
-            self.revars = revars #revars - regex variables
-            self.compiled_vars = dict()
-            self.__verifyRevars()
-            self.__compileRegex()
+        self.revars = revars #revars - regex variables
+        self.compiled_vars = dict()
+        self.__verifyRevars()
+        self.__compileRegex()
 
     @classmethod
     def to_yaml(cls, representer, node):
@@ -36,6 +36,11 @@ class RT:
     @classmethod
     def from_yaml(cls, constructor, node):
         regex, revars_str = node.value.split(cls.splitter, 1)
+        print(regex)
+        print(revars_str)
+        c = cls(regex, json.loads(revars_str), False)
+        print(vars(c))
+        print(c.revars)
         return cls(regex, json.loads(revars_str), False)
 
     def __verifyRevars(self):
