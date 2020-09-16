@@ -33,7 +33,7 @@ function getArb(arbetel, id) {
 
 function main() {
   arbets = document.querySelectorAll(".col-xs-12.arb-item-body-js")
-  if (!arbets) return
+  if (arbets.length == 0) return
 
   betsjson = { events: [] }
 
