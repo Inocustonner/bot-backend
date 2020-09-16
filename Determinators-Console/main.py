@@ -41,12 +41,12 @@ def remove_process():
 
 def determine_process():
     outcome = input('Outcome: ')
-    if outcome:
-        return requests.get(
+    while outcome:
+        print(requests.get(
             f'http://192.168.6.3/api/determinators/determine?outcome={outcome}'
-        ).json()
-    else:
-        return ''
+        ).json())
+        outcome = input('Outcome: ')
+    return ''
 
 
 def invalidOption():
