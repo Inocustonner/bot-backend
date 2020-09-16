@@ -69,6 +69,7 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
     except Exception as e:
         log.error(f_last_error(logging.ERROR))
         return json_error(2, str(e))
+    save_rts()
     return json_success()
 
 
