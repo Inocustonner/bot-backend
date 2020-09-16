@@ -69,7 +69,8 @@ function init() {
 const onExists = (selector, parent, timeout) => {
   parent = parent ? parent : document.body
   return new Promise((r, e) => {
-    const exists = selector => $(selector).length
+    let elem = parent.querySelector(selector)
+    const exists = selector => parent.querySelector(selector) != null
     // if already exists
     if (exists(selector)) r(parent.querySelector(selector))
 
