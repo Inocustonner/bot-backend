@@ -6,6 +6,7 @@
 //			[bets:]
 //				bet:
 //					bookmaker, outcome, koef, url
+var observer;
 
 function getArb(arbetel, id) {
   arb = { id: id, bets: [] }
@@ -58,7 +59,7 @@ function main() {
 }
 
 function init() {
-  new MutationObserver(main).observe(document.querySelector("#arbsScroll"), {
+  observer = new MutationObserver(main).observe(document.querySelector("#arbsScroll"), {
     childList: true,
     subtree: true,
     attributes: true,
