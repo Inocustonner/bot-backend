@@ -1,0 +1,12 @@
+var := "$" varname
+group := "(" regex ")"
+
+str := any_symbol
+str_q := '"' str '"'
+match := str_q
+
+value := var | str_q
+conditional := {"?" match "->" value ":"} value
+
+expr := (group | var) (conditional)?
+

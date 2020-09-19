@@ -1,47 +1,32 @@
 from Determinator.Determinator import *
-import json
-import os.path
-import sys
 import pytest
+import json
+import pprint
 
-this_dir = os.path.dirname(os.path.abspath(__file__))
- 
-@pytest.mark.dependency(name='adding')
-def test_adding():
-    with open(os.path.join(this_dir, "determinator_data.json"), 'rb') as f:
-        data = json.load(f)
-    for a in data:
-        add_determinator(a['comment'], a['regex'], a['vars'], a['section'], a['outcome'])
+with open("test/determinator_data.json", 'rb') as f:
+    inp, res = json.load(f)
 
-    dets = json.loads(get_determinators())
-    assert len(dets) == len(data)
-    for a in data:
-        comment = a['comment']
-        assert comment in dets
-        assert a['regex'] in dets[comment]['regex']
-        assert a['section'] in dets[comment]['section']
-        assert a['outcome'] in dets[comment]['outcome']
-        
-@pytest.mark.dependency(depends=['adding'])
-def test_apply():
-    def check(app):
-        ans = json.loads(apply_determinator(app))
-        print(app, ans)
-        return not ans.get('error', False)
-    app1 = "Тб(1) - для первой команды"
-    app2 = "Ф1(3) для команды`"
-    fail3 = "Ф3(3) для команды"
-    app4 = "3"
-    assert check(app1)
-    assert check(app2)
-    assert not check(fail3)
-    assert check(app4)
+pp = pprint.PrettyPrinter(4)
+pprint = pp.pprint
+pformat = pp.pformat
 
-@pytest.mark.dependency(depends=['adding'])    
-def test_serialization():
-    fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test.rts.yml')
-    rts_prev = rts.copy()
-    save_rts(fpath)
-    load_rts(fpath)
-    assert rts_prev == rts
-    os.remove(fpath)
+@pytest.mark.dependency()
+def test_determinator_add():
+    global rts
+    for comment, body in inp.items():
+        add_determinator(comment, body['regex'], body['dt_vars'], body['SOPairs'])
+        assert rts[comment]['regex'] == ensure_fullstring_match(body['regex'])
+        assert rts[comment]['SOPairs'] == body['SOPairs']
+        assert rts[comment]['rt'].revars == body['dt_vars']
+
+@pytest.mark.dependency(depends=["test_determinator_add"])
+def test_determinator_apply():
+    def format_pairs(pairs):
+        return list(map(lambda pair: [format_out(pair[0]), format_out(pair[1])], map(format_SO, pairs)))
+            
+    for outcome, ret_pairs in res.items():
+        fmtd_pairs = json.dumps(format_pairs(ret_pairs))
+        det_ret = apply_determinator(outcome)
+        print(fmtd_pairs)
+        print(det_ret)
+        assert fmtd_pairs == det_ret

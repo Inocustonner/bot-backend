@@ -1,0 +1,11 @@
+In general: 
+	1. Variables can be used as values for other variables, if variables that use other variables are not present in determinator expression
+	For example:
+	For the following variables and DE, applying string "Team2" 
+	must set |$p to 2| and |$d to 3|
+		var $p = (\d)
+		var $d = $p ? "1" -> "2": "2" -> "3"
+		DE: Team$p
+In details: 
+	Variables that use others as their values MUST NOT occure in the determinator expression(DE)
+	Variables values, probably will be applied after evaluation of those in DE	

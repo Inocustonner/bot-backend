@@ -1,7 +1,7 @@
-# try:
-from RegexTemplater.ValueParser import isvalidvar, runParser
-# except ImportError:
-#     from ValueParser import isvalidvar, runParser
+try:
+    from RegexTemplater.ValueParser import isvalidvar, runParser
+except ImportError:
+    from ValueParser import isvalidvar, runParser
 
 from typing import Dict, Optional
 from toolz.functoolz import pipe
@@ -31,6 +31,7 @@ class RT:
 
         self.revars = revars  #revars - regex variables
         self.compiled_vars = dict()
+        self.compiled_vars_dependend = dict() # for variables that accept other vars as input
         self.__verifyRevars()
         self.__compileRegex()
 
@@ -52,31 +53,53 @@ class RT:
                     f"Variable '{key}' not suffice variable name constraints")
             if self.regex.count(key) > 1:
                 raise SyntaxError("Each variable should occure only once")
-            elif self.regex.count(key) == 0:
-                raise SyntaxError("Each variable should occure at least once")
+            # elif self.regex.count(key) == 0:
+            #     raise SyntaxError("Each variable should occure at least once")
 
     def __compileRegex(self):
+        key_pattern = dict()
+        for key, value in self.revars.items():
+            r = self.__preparevalue(key[1:], value)
+            key_pattern.update(r)
+            
         piped = pipe(
             self.regex, *[
                 callOnObject(
-                    'replace', key,
-                    rf'(?P<{key[1:]}>{self.__preparevalue(key[1:], value)})',
-                    1) for key, value in self.revars.items()
+                    'replace', f'${key}',
+                    rf'(?P<{key}>{pattern})',
+                    1) for key, pattern in key_pattern.items()
             ])
         self.compiled = re.compile(piped)
 
-    def __preparevalue(self, key: str, val: str) -> str:
-        pattern, conds = runParser(val)
-        self.compiled_vars.update({key: conds})
-        return pattern
+    def __preparevalue(self, key: str, val: str) -> Dict[str, str]:
+        pattern, conds, is_val_input = runParser(val)
+        if not is_val_input:
+            self.compiled_vars.update({key: conds})
+            return {key: pattern}
+        else:
+            pair = { f'${key}': conds }
+            if pattern not in self.compiled_vars_dependend:
+                self.compiled_vars_dependend[pattern] = pair
+            else:
+                self.compiled_vars_dependend[pattern].update(pair)
+            return {}
+    
+    def __eval_var_conds(self, var_conds, input_: str) -> str:
+        return var_conds.get(input_, var_conds['~'](input_))
 
     def __eval_vars(self, matched_groups: dict) -> Dict[str, str]:
         var_dict = {  # apply post-branching
-            k: self.compiled_vars[k].get(v, self.compiled_vars[k]['~'](v))
+            k: self.__eval_var_conds(self.compiled_vars[k], v)
             for k, v in matched_groups.items()
         }
-        return dict(
+        evaled_var_dict = dict(
             map(lambda item: ('$' + item[0], item[1]), var_dict.items()))
+        evaled_vars_depended = {}
+        for var, depended_vars in self.compiled_vars_dependend.items():
+            for var_dep, conds in depended_vars.items():
+                evaled_vars_depended.update({var_dep: self.__eval_var_conds(conds, evaled_var_dict[var])})
+        evaled_var_dict.update(evaled_vars_depended)
+        return evaled_var_dict
 
     def apply(self, string: str) -> Optional[Dict[str, str]]:
         if (m := self.compiled.fullmatch(string)):
@@ -86,7 +109,7 @@ class RT:
 
 
 if __name__ == "__main__":
-    r = RT("$nomTeam", {"$nomTeam": "(\d)"})
+    r = RT("$nomTeam", {"$nomTeam": "(\d+)", "$p": "$nomTeam ? \"13\" -> \"match\": \"12\""})
     print(r.regex)
     print(r.compiled)
     print(r.apply("13"))

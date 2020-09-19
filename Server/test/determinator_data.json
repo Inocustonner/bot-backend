@@ -1,32 +1,35 @@
 [
-	{
-		"comment": "Тб",
-		"vars": {
-			"$Тб": "(Т(б|м))",
-			"$p": "(\\d+)",
-			"$team": "(\\w+) ? \"первой\" -> $team1 : $team2"
-		},
-		"regex": "$Тб\\($p\\) - для $team команды",
-		"section": "Инд. Тотал",
-		"outcome": "$team\\($p\\) - $Тб"
+    {
+	"N": {
+	    "regex": "$n",
+	    "dt_vars": {
+		"$n": "(\\d)"
+	    },
+	    "SOPairs": [
+		["section$n", "$n - outcome"]
+	    ]
 	},
-	{
-		"comment": "Фора",
-		"vars": {
-			"$Ф": "(Ф(1|2))",
-			"$p": "(\\d+)"
-		},
-		"regex": "$Ф\\($p\\).*",
-		"section": "Фора команды",
-		"outcome": "$Ф\\($p\\)"
-	},
-	{
-		"comment": "N",
-		"vars": {
-			"$n": "(\\d)"
-		},
-		"regex": "$n",
-		"section": "",
-		"outcome": "\\w$n"
+	
+	"NP": {
+	    "regex": "$n - p",
+	    "dt_vars": {
+		"$n": "(\\d)",
+		"$p": "$n ? \"1\" -> $team1: $team2"
+	    },
+	    "SOPairs": [
+		["", "$p - out"],
+		["section $n", "$p - out"]
+	    ]
 	}
+    },
+
+    {
+	"3": [
+	    ["section3", "3 - outcome"]
+	],
+	"2 - p": [
+	    ["", "${team2} - out"],
+	    ["section 2", "${team2} - out"]
+	]
+    }
 ]
