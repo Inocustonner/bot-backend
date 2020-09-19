@@ -4,4 +4,5 @@
 **/~$*.doc*
 */venv/
 Server/data/*
-Server/Determinator/*rts.yml
+Server/Determinator/*rts.yml*
+backup/
