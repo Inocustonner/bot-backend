@@ -44,6 +44,7 @@ def ensure_fullstring_match(regex: str) -> str:
         regex = "^" + regex
     return regex
 
+
 def format_SO(so: Tuple[str, str]) -> Tuple[str, str]:
     section, outcome = so
     if section:
@@ -52,30 +53,27 @@ def format_SO(so: Tuple[str, str]) -> Tuple[str, str]:
     return (section, outcome)
 
 
-def add_determinator(
-    comment: str, dt_regex: str, dt_vars: Dict[str, str], SOPairs: List[Tuple[str, str]]
-) -> dict:
+def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
+                     SOPairs: List[Tuple[str, str]]) -> dict:
     global rts
     if comment == "":
         return json_error(3, "Empty type is not allowed")
-    dt_regex = ensure_fullstring_match(dt_regex)
-
+    if len(SOPairs) == 0:
+        return json_error(4, "At least should be 1 pair of determinators")
     i = 0
+    print(SOPairs)
     for i, pair in enumerate(SOPairs):
         SOPairs[i] = format_SO(pair)
 
-    log.debug(
-        "\n\t".join(
-            [
-                "RTS: adding - {",
-                f"comment: {comment}",
-                f"regex: {dt_regex}",
-                f"vars: {dt_vars}",
-                f"SOPairs: {pp.pformat(SOPairs)}"
-                "}",
-            ]
-        )
-    )
+    dt_regex = ensure_fullstring_match(dt_regex)
+    log.debug("\n\t".join([
+        "RTS: adding - {",
+        f"comment: {comment}",
+        f"regex: {dt_regex}",
+        f"vars: {dt_vars}",
+        f"SOPairs: {pp.pformat(SOPairs)}"
+        "}",
+    ]))
     try:
         rt = RT(dt_regex, dt_vars, True)
         rts[comment] = {"regex": dt_regex, "rt": rt, "SOPairs": SOPairs}
@@ -102,20 +100,26 @@ def get_determinators() -> str:
         if type(o) is RT:
             return o.revars
 
-    return (
-        json.dumps(rts, default=default)
-        .replace('"rt":', '"vars":')
-        .replace('"^', '"')
-        .replace('$"', '"')
-    )  # for front end
+    new_rts = rts.copy()
+    for _, body in new_rts.items():
+        body["SOPairs"] = list(
+            map(lambda pair: {
+                "section": pair[0],
+                "outcome": pair[1]
+            }, body["SOPairs"]))
+    return (json.dumps(rts,
+                       default=default).replace('"rt":', '"vars":').replace(
+                           '"^', '"').replace('$"', '"'))  # for front end
 
 
 def format_out(o: str) -> str:
     o.replace("\\", "\\" * 2)
     return f"`{o}`"
 
+
 def apply_determinator(outcome: str) -> str:
     global rts
+
     # Add caching !!!
     def __apply(rts_item: Tuple[str, Dict]) -> Tuple[str, str]:
         comment, rts_body = rts_item
@@ -139,7 +143,9 @@ def apply_determinator(outcome: str) -> str:
     result = tuple()
     item = next(itertools.dropwhile(__not_match, rts.items()), None)
     if not item:
-        log.debug(f"RTS: coulndn'apply for {outcome}, appropriate regex was not found")
+        log.debug(
+            f"RTS: coulndn'apply for {outcome}, appropriate regex was not found"
+        )
         return json_error_str(1, "Not found")
     # we sure it matches
     SOPairs = __apply(item)
@@ -155,10 +161,10 @@ def save_rts(fpath: str = ""):
     global rts
     global loaded_from_backup
     if not fpath:
-        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
-    fbackup = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), BACKUP_FILE_PREFIX + CONF_FILE
-    )
+        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             CONF_FILE)
+    fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           BACKUP_FILE_PREFIX + CONF_FILE)
     # create copy in case something fails
     if os.path.exists(fpath) and not loaded_from_backup and len(rts):
         shutil.copyfile(fpath, fbackup)
@@ -187,10 +193,10 @@ def load_rts(fpath: str = ""):
         return bool(rts)
 
     if not fpath:
-        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONF_FILE)
-    fbackup = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), BACKUP_FILE_PREFIX + CONF_FILE
-    )
+        fpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             CONF_FILE)
+    fbackup = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           BACKUP_FILE_PREFIX + CONF_FILE)
     if os.path.exists(fpath) and __load_rts(fpath):
         return
 

@@ -21,7 +21,7 @@ def determinators_apply():
         data = json.loads(request.get_data().decode('utf8'))
         log.debug(f'Got: {data}')
         for key, values in data.items():
-            ret = add_determinator(key, values['regex'], values['vars'], list(map(tuple, values['SOPairs'])))
+            ret = add_determinator(key, values['regex'], values['vars'], list(map(lambda obj: tuple(obj.values()), values['SOPairs'])))
             if (ret.get('error')): return ret, 400
         return ret
     except Exception as e:

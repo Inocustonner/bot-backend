@@ -1,35 +1,37 @@
 [
-    {
-	"N": {
-	    "regex": "$n",
-	    "dt_vars": {
-		"$n": "(\\d)"
-	    },
-	    "SOPairs": [
-		["section$n", "$n - outcome"]
-	    ]
-	},
-	
-	"NP": {
-	    "regex": "$n - p",
-	    "dt_vars": {
-		"$n": "(\\d)",
-		"$p": "$n ? \"1\" -> $team1: $team2"
-	    },
-	    "SOPairs": [
-		["", "$p - out"],
-		["section $n", "$p - out"]
-	    ]
-	}
+  {
+    "N": {
+      "regex": "$n",
+      "dt_vars": {
+        "$n": "(\\d)"
+      },
+      "SOPairs": [{ "section": "section$n", "outcome": "$n - outcome" }]
     },
 
-    {
-	"3": [
-	    ["section3", "3 - outcome"]
-	],
-	"2 - p": [
-	    ["", "${team2} - out"],
-	    ["section 2", "${team2} - out"]
-	]
+    "NP": {
+      "regex": "$n - p",
+      "dt_vars": {
+        "$n": "(\\d)",
+        "$p": "$n ? \"1\" -> $team1: $team2"
+      },
+      "SOPairs": [
+        {
+          "section": "",
+          "outcome": "$p - out"
+        },
+        {
+          "section": "section $n",
+          "outcome": "$p - out"
+        }
+      ]
     }
+  },
+
+  {
+    "3": [["section3", "3 - outcome"]],
+    "2 - p": [
+      ["", "${team2} - out"],
+      ["section 2", "${team2} - out"]
+    ]
+  }
 ]

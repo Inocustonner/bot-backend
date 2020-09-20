@@ -14,9 +14,11 @@ pformat = pp.pformat
 def test_determinator_add():
     global rts
     for comment, body in inp.items():
-        add_determinator(comment, body['regex'], body['dt_vars'], body['SOPairs'])
+        pairs = list(map(lambda obj: tuple(obj.values()), body['SOPairs']))
+        add_determinator(comment, body['regex'], body['dt_vars'], pairs)
+        pprint(rts)
         assert rts[comment]['regex'] == ensure_fullstring_match(body['regex'])
-        assert rts[comment]['SOPairs'] == body['SOPairs']
+        assert rts[comment]['SOPairs'] == pairs
         assert rts[comment]['rt'].revars == body['dt_vars']
 
 @pytest.mark.dependency(depends=["test_determinator_add"])
