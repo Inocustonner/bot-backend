@@ -20,20 +20,20 @@ def add_process():
     new_type[type_]['regex'] = input('Regex: ')
     new_type[type_]['section'] = input('Section: ')
     new_type[type_]['outcome'] = input('Outcome: ')
-    return requests.post('http://192.168.6.3/api/determinators/apply',
+    return requests.post('http://192.168.6.3/dev/api/determinators/apply',
                          data=json.dumps(new_type)).json()
 
 
 def get_process():
     return json.loads(requests.get(
-        'http://192.168.6.3/api/determinators/get_determinators').text)
+        'http://192.168.6.3/dev/api/determinators/get_determinators').text)
 
 
 def remove_process():
     type_ = input('Type: ')
     if type_:
         return json.dumps(requests.get(
-            f'http://192.168.6.3/api/determinators/remove?type={type_}').text,
+            f'http://192.168.6.3/dev/api/determinators/remove?type={type_}').text,
                           indent=4)
     else:
         return ''
@@ -43,7 +43,7 @@ def determine_process():
     outcome = input('Outcome: ')
     while outcome:
         print(requests.get(
-            f'http://192.168.6.3/api/determinators/determine?outcome={outcome}'
+            f'http://192.168.6.3/dev/api/determinators/determine?outcome={outcome}'
         ).json())
         outcome = input('Outcome: ')
     return ''

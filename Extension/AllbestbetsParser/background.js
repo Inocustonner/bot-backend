@@ -1,4 +1,4 @@
-const SERVERADDR = "http://192.168.6.3/api/send_info";
+const SERVERADDR = "http://192.168.6.3/dev/api/send_info";
 var bets_buffer = {};
 MIN_WAIT = 6;
 
