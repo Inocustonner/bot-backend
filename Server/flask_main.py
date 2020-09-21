@@ -91,7 +91,7 @@ def start_flask(host='localhost', port=5050):
     log.info(f'Flask is started on {host}:{port}')
     try:
         load_rts()
-        app.run('localhost', 5050)
+        app.run(host, port)
     finally:
         # on flask exit
         save_rts()
