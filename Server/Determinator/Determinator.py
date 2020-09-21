@@ -61,7 +61,6 @@ def add_determinator(comment: str, dt_regex: str, dt_vars: Dict[str, str],
     if len(SOPairs) == 0:
         return json_error(4, "At least should be 1 pair of determinators")
     i = 0
-    print(SOPairs)
     for i, pair in enumerate(SOPairs):
         SOPairs[i] = format_SO(pair)
 
@@ -106,7 +105,7 @@ def get_determinators() -> str:
             map(lambda pair: {
                 "section": pair[0],
                 "outcome": pair[1]
-            }, body["SOPairs"]))
+            }, body["SOPairs"][:]))
     return (json.dumps(rts,
                        default=default).replace('"rt":', '"vars":').replace(
                            '"^', '"').replace('$"', '"'))  # for front end

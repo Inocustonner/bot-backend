@@ -49,7 +49,7 @@ def index():
         ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
         ip = request.remote_addr
-    return ip
+    return f"DEV SERVER:\n{ip}"
 
 # GET IS FOR TESTING PURPOSES
 @app.route('/api/send_info', methods=['POST'])
