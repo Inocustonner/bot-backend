@@ -85,11 +85,8 @@ def flask_init(queue):
     
     init_manager('data')
     
-def start_flask():
+def start_flask(host='localhost', port=5050):
     global log
-    host = 'localhost'
-    port = 5050
-    # print()
     log = logging.getLogger('bot-backend')
     log.info(f'Flask is started on {host}:{port}')
     try:
