@@ -99,14 +99,15 @@ def get_determinators() -> str:
         if type(o) is RT:
             return o.revars
 
-    new_rts = rts.copy()
-    for _, body in new_rts.items():
-        body["SOPairs"] = list(
+    new_rts = {}
+    for comment, body in rts.items():
+        new_rts[comment] = body.copy()
+        new_rts[comment]["SOPairs"] = list(
             map(lambda pair: {
                 "section": pair[0],
                 "outcome": pair[1]
-            }, body["SOPairs"][:]))
-    return (json.dumps(rts,
+            }, new_rts[comment]["SOPairs"]))
+    return (json.dumps(new_rts,
                        default=default).replace('"rt":', '"vars":').replace(
                            '"^', '"').replace('$"', '"'))  # for front end
 
