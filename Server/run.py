@@ -33,7 +33,8 @@ def main():
 
     create_logger()
     flask_init(queue)
-    start_flask()
+    server_ip, server_port = config["server_addr"].split(':')
+    start_flask(server_ip, int(server_port))
 
 if __name__ == "__main__":
     main()
