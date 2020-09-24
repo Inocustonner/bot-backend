@@ -113,7 +113,7 @@ def get_determinators() -> str:
 
 
 def format_out(o: str) -> str:
-    o.replace("\\", "\\" * 2)
+    o = o.replace('\\', '\\' * 2)
     return f"`{o}`"
 
 
